@@ -40,8 +40,11 @@ endfunction"}}}
 
 function! unite#sources#git_grep#grep(input)"{{{
 	let l:result = unite#util#system('git grep -n ' . a:input)
+	let l:result = strpart(l:result, 0, 10000)
 	let l:matches = split(l:result, '\r\n\|\r\|\n')
+	let l:matches = filter(l:matches, 'strlen(v:val) < 300')
   let l:entries = map(l:matches, '[v:val, split(v:val, ":")]')
+  let l:entries = filter(l:entries, 'len(v:val[1]) >= 3')
   return map(l:entries,
     \ '{
     \   "word": v:val[0],
